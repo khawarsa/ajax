@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded",
         
         // Call server to get the name
         $ajaxUtils
-          .sendGetRequest("assets/data/name.txt", 
+          .sendGetRequest("https://khawarsa.github.io/ajax/assets/data/name.txt", 
             function (request) {
                var name = request.responseText;
                 document.querySelector("#content")
