@@ -10,7 +10,7 @@
 		<title>Javascript Tutrials</title>
 		<link rel="stylesheet" type="text/css" href="assets/css/style.css">
 		<link rel="stylesheet" type="text/css" href="assets/css/prism.css">
-		
+		 <script src="assets/js/script.js"></script>
 	</head>
 	<body>
 		<section>
@@ -22,202 +22,107 @@
 					<div class="col-md-9">
 						<div class="card mt-5 mb-4" id="first">
 							<div class="card-header">
-								<h4 class="pl-3 pt-5">1-Console log Messages</h4>
+								<h4 class="pl-3 pt-5">1-Code on HTML</h4>
 							</div>
 							<div class="card-body">
-								<pre>
-									<code class="language-javascript">
-									var x = "Hello World!";
-									console.log(x)
-									</code>
-								</pre>
+								<h4 id="title" class="pt-5 pl-5"></h4>
+								<p><button> Say Hello To Someone on the Server!  </button> </p>
+								<div id="content"></div>
 							</div>
 						</div>
-						<div class="card mt-5 mb-4" id="two">
+						
+						<div class="card mt-5 mb-4" id="second">
 							<div class="card-header">
-								<h4 class="pl-3 pt-5">2-Function Scope</h4>
+								<h4  class="pl-3 pt-5">1-ajax</h4>
 							</div>
 							<div class="card-body">
-								<pre>
-									<code class="language-javascript">
-									var message = "in global";
-									console.log("global: message = " + message);
-									var a = function () {
-									var message = "inside a";
-									console.log("a: message = " + message);
-									function b () {
-									console.log("b: message = " + message);
-									}
-									b();
-									}
-									a();
-									</code>
-								</pre>
 								
-							</div>
-						</div>
-						<div class="card mt-5 mb-4" id="three">
-							<div class="card-header">
-								<h4  class="pl-3 pt-5">3-DataTypes</h4>
-							</div>
-							<div class="card-body">
-								<p class="pl-4">There are total 7 datatypes. One is object type and 6 are primitive types</p>
-								<ol>
-									<li >Object Type</li>
-									<li >Boolean</li>
-									<li >Undefined</li>
-									<li >Null</li>
-									<li >Number</li>
-									<li >String</li>
-									<li >Symbol new in ES6</li>
-								</ol>
+								
 								<div class="card mt-4 bg-white">
-									<h5 class="pl-3 pt-5">Undefined</h5>
+									<h5 class="pl-3 pt-5">ajax-utils</h5>
 									<div class="card-body">
 										<pre>
 											<code class="language-javascript">
-											var word;
-											console.log(word);
-											if (word == undefined) {
-											console.log("word is undefined");
+											(function (global) {
+											// Set up a namespace for our utility
+											var ajaxUtils = {};
+											// Returns an HTTP request object
+											function getRequestObject() {
+											  if (global.XMLHttpRequest) {
+											    return (new XMLHttpRequest());
+											  } 
+											  else if (global.ActiveXObject) {
+											    // For very old IE browsers (optional)
+											    return (new ActiveXObject("Microsoft.XMLHTTP"));
+											  } 
+											  else {
+											    global.alert("Ajax is not supported!");
+											    return(null); 
+											  }
 											}
-											word = 5;
-											if (word == undefined) {
-											console.log("word is undefined");
+											// Makes an Ajax GET request to 'requestUrl'
+											ajaxUtils.sendGetRequest = 
+											  function(requestUrl, responseHandler) {
+											    var request = getRequestObject();
+											    request.onreadystatechange = 
+											      function() { 
+											        handleResponse(request, responseHandler); 
+											      };
+											    request.open("GET", requestUrl, true);
+											    request.send(null); // for POST only
+											  };
+											// Only calls user provided 'responseHandler'
+											// function if response is ready
+											// and not an error
+											function handleResponse(request,
+											                        responseHandler) {
+											  if ((request.readyState == 4) &&
+											     (request.status == 200)) {
+											    responseHandler(request);
+											  }
 											}
-											else {
-											console.log("word has been defined");
-											}
+											// Expose utility to the global object
+											global.$ajaxUtils = ajaxUtils;
+											})(window);
 											</code>
 										</pre>
 									</div>
 								</div>
 								<div class="card mt-4 bg-white">
-									<h5 class="pl-3 pt-5">String concatination</h5>
+									<h5 class="pl-3 pt-5">Scripts</h5>
 									<div class="card-body">
 										<pre>
 											<code class="language-javascript">
-											var string = "Hello";
-											string += " World";
-											string = string + " World";
-											console.log(string + "!");
+											 // Event handling
+											document.addEventListener("DOMContentLoaded",
+											  function (event) {
+											    
+											    // Unobtrusive event binding
+											    document.querySelector("button")
+											      .addEventListener("click", function () {
+											        
+											        // Call server to get the name
+											        $ajaxUtils
+											          .sendGetRequest("assets/data/name.txt", 
+											            function (request) {
+											              var name = request.responseText;
+											              document.querySelector("#content")
+											                .innerHTML = "<h2>Hello " + name + "!</h2>";
+											            });
+											        
+											      });
+											  }
+											);
 											</code>
 										</pre>
 									</div>
 								</div>
 								<div class="card mt-4 bg-white">
-									<h5 class="pl-3 pt-5">Regular math operators: +, -, *, /</h5>
+									<h5 class="pl-3 pt-5">Data</h5>
 									<div class="card-body">
 										<pre>
 											<code class="language-javascript">
-											console.log((5 + 4) / 3);
-											console.log(undefined / 5);
-											function test1 (a) {
-											console.log( a / 5);
-											}
-											test1();
-											</code>
-										</pre>
-									</div>
-								</div>
-								<div class="card mt-4 bg-white">
-									<h5 class="pl-3 pt-5">Equality</h5>
-									<div class="card-body">
-										<pre>
-											<code class="language-javascript">
-											var x = 4, y = 4;
-											if (x == y) {
-											console.log("x=4 is equal to y=4");
-											}
-											x = "4";
-											if (x == y) {
-											console.log("x='4' is equal to y=4");
-											}
-											</code>
-										</pre>
-									</div>
-								</div>
-								<div class="card mt-4 bg-white">
-									<h5 class="pl-3 pt-5">Strict equality</h5>
-									<div class="card-body">
-										<pre>
-											<code class="language-javascript">
-											if (x === y) {
-											console.log("Strict: x='4' is equal to y=4");
-											}
-											else {
-											console
-											.log("Strict: x='4' is NOT equal to y=4");
-											}
-											</code>
-										</pre>
-									</div>
-								</div>
-								<div class="card mt-4 bg-white">
-									<h5 class="pl-3 pt-5">If statement (all false)</h5>
-									<div class="card-body">
-										<pre>
-											<code class="language-javascript">
-											if ( false || null ||
-											undefined || "" || 0 || NaN) {
-											console.log("This line won't ever execute");
-											}
-											else {
-											console.log ("All false");
-											}
-											</code>
-										</pre>
-										<p><strong>Note:</strong> Pass all condition to test whether it is true or false Boolean(null)</p>
-										
-										
-									</div>
-								</div>
-								<div class="card mt-4 bg-white">
-									<h5 class="pl-3 pt-5">If statement (all true)</h5>
-									<div class="card-body">
-										<pre>
-											<code class="language-javascript">
-											if (true &amp;&amp; "hello" &amp;&amp; 1 &amp;&amp; -1 &amp;&amp; "false") {
-											console.log("All true");
-											}
-											</code>
-										</pre>
-									</div>
-								</div>
-								<div class="card mt-4 bg-white">
-									<h5 class="pl-3 pt-5">Best practice for {}</h5>
-									<div class="card-body">
-										<pre>
-											<code class="language-javascript">
-											function a()
-											{
-											return
-											{
-											name: "khawar"
-											};
-											}
-											function b() {
-											return {
-											name: "khawar"
-											};
-											}
-											console.log(a());
-											console.log(b());
-											</code>
-										</pre>
-									</div>
-								</div>
-								<div class="card mt-4 bg-white">
-									<h5 class="pl-3 pt-5">For loop</h5>
-									<div class="card-body">
-										<pre>
-											<code class="language-javascript">
-											var sum = 0;
-											for (var i = 0; i < 10; i++) {
-											console.log(i);
-											sum = sum + i;
-											}
-											console.log("sum of 0 through 9 is: " + sum);
+											 Muhammad khawar	
 											</code>
 										</pre>
 									</div>
@@ -227,18 +132,10 @@
 					</div>
 					<div class="col-md-3">
 						<ul class="list-group mt-5">
-							<li class="list-group-item"><a href="#first">1-console log</a> </li>
-							<li class="list-group-item"><a href="#two">2-Function Scope</a> </li>
-							<li class="list-group-item"><a href="#three">3-DataTypes</a>  </li>
-							<li class="list-group-item"><a href="#four">4-Default Values</a>  </li>
-							<li class="list-group-item"><a href="#five">5-Two way creation of object</a>  </li>
-							
-							
+							<li class="list-group-item"><a href="#first">1-Code on HTML</a> </li>
+							<li class="list-group-item"><a href="#two">2-Script</a> </li>
 						</ul>
 					</div>
-					
-					
-					
 				</div>
 			</div>
 		</section>
@@ -250,6 +147,6 @@
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 		<script src="assets/js/prism.js"></script>
 		<script src="assets/js/ajax-utils.js"></script>
-		<script src="assets/js/script.js"></script>
+		
 	</body>
 </html>
